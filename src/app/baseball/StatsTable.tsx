@@ -67,7 +67,7 @@ export function StatsTable({
                   {col.header}
                   {sortKey === col.key && (sortDir === "asc" ? " ▲" : " ▼")}
                   {def && (
-                    <div className="pointer-events-none absolute left-0 top-full z-10 mt-1 hidden w-64 rounded-md border border-gray-200 bg-white p-3 text-xs font-normal normal-case text-gray-700 shadow-lg group-hover:block dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+                    <div className="pointer-events-none absolute left-0 top-full z-10 mt-1 hidden w-72 rounded-md border border-gray-200 bg-white p-3 text-xs font-normal normal-case text-gray-700 shadow-lg group-hover:block dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
                       <p className="mb-1 font-semibold text-gray-900 dark:text-gray-50">
                         {def.label}
                       </p>
@@ -75,10 +75,22 @@ export function StatsTable({
                         <span className="font-medium">What it is: </span>
                         {def.simple}
                       </p>
-                      <p>
+                      <p className={def.scale ? "mb-2" : ""}>
                         <span className="font-medium">What it tells you: </span>
                         {def.abstract}
                       </p>
+                      {def.scale && (
+                        <div className="border-t border-gray-200 pt-2 dark:border-gray-700">
+                          <p className="mb-1 font-medium">Scale:</p>
+                          <ul className="space-y-0.5">
+                            {def.scale.map((tier) => (
+                              <li key={tier.label}>
+                                {tier.emoji} {tier.label}: {tier.range}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   )}
                 </th>
