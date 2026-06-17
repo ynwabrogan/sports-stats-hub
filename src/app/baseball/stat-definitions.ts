@@ -72,6 +72,25 @@ export const STAT_DEFINITIONS: Record<string, StatDefinition> = {
       { emoji: "💀", label: "Terrible", range: "below 70" },
     ],
   },
+  wraa: {
+    label: "Weighted Runs Above Average",
+    simple:
+      "The run-value version of wOBA — how many runs a hitter has contributed above what a league-average hitter would in the same number of plate appearances.",
+    abstract:
+      "Same idea as wRC+, but expressed as a raw run total instead of an index, so it grows the more a player plays.",
+  },
+  bsr: {
+    label: "Baserunning Runs",
+    simple:
+      "Runs added or lost on the bases beyond simple stolen bases — includes things like taking extra bases on hits and avoiding outs on the bases.",
+    abstract: "How much a player's baserunning specifically helps or hurts their team.",
+  },
+  def: {
+    label: "Defensive Runs",
+    simple:
+      "Runs saved or cost by a player's defense, relative to an average fielder at their position.",
+    abstract: "How much a player's glove specifically helps or hurts their team.",
+  },
   war: {
     label: "Wins Above Replacement",
     simple:
@@ -149,6 +168,34 @@ export const STAT_DEFINITIONS: Record<string, StatDefinition> = {
       { emoji: "😐", label: "Average", range: "3.61 – 4.20" },
       { emoji: "👎", label: "Bad", range: "4.21 – 5.00" },
       { emoji: "💀", label: "Terrible", range: "above 5.00" },
+    ],
+  },
+  xfip: {
+    label: "Expected Fielding Independent Pitching",
+    simple:
+      "Like FIP, but replaces actual home runs allowed with an estimate based on a pitcher's fly ball rate and the league-average rate of fly balls becoming home runs.",
+    abstract:
+      "Smooths out home-run luck/variance to estimate a pitcher's underlying skill — useful for spotting whether an unusual HR rate is real or fluky.",
+    scale: [
+      { emoji: "🔥", label: "Elite", range: "2.80 and below" },
+      { emoji: "✅", label: "Good", range: "2.81 – 3.60" },
+      { emoji: "😐", label: "Average", range: "3.61 – 4.20" },
+      { emoji: "👎", label: "Bad", range: "4.21 – 5.00" },
+      { emoji: "💀", label: "Terrible", range: "above 5.00" },
+    ],
+  },
+  fipMinus: {
+    label: "FIP Minus",
+    simple:
+      "FIP scaled relative to league and park, where 100 = league average (lower is better, opposite of wRC+).",
+    abstract:
+      "Shows how a pitcher's FIP compares to league average in one number — 80 means 20% better (fewer runs allowed) than average.",
+    scale: [
+      { emoji: "🔥", label: "Elite", range: "70 and below" },
+      { emoji: "✅", label: "Good", range: "71 – 85" },
+      { emoji: "😐", label: "Average", range: "86 – 110" },
+      { emoji: "👎", label: "Bad", range: "111 – 130" },
+      { emoji: "💀", label: "Terrible", range: "above 130" },
     ],
   },
 };

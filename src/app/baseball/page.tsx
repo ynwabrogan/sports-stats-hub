@@ -39,6 +39,9 @@ type RawHittingSaberStat = {
   war: number;
   wRcPlus: number;
   woba: number;
+  wRaa: number;
+  baseRunning: number;
+  fielding: number;
 };
 
 type RawPitchingStat = {
@@ -54,6 +57,8 @@ type RawPitchingStat = {
 type RawPitchingSaberStat = {
   war: number;
   fip: number;
+  xfip: number;
+  fipMinus: number;
 };
 
 function formatInningsPitched(outs: number): string {
@@ -95,7 +100,10 @@ async function getHitterRow(id: number, name: string): Promise<Row> {
     homeRuns: season?.stat.homeRuns ?? "—",
     rbi: season?.stat.rbi ?? "—",
     woba: saber ? Number(saber.stat.woba.toFixed(3)) : "—",
+    wraa: saber ? Number(saber.stat.wRaa.toFixed(1)) : "—",
     wrcPlus: saber ? Math.round(saber.stat.wRcPlus) : "—",
+    bsr: saber ? Number(saber.stat.baseRunning.toFixed(1)) : "—",
+    def: saber ? Number(saber.stat.fielding.toFixed(1)) : "—",
     war: saber ? Number(saber.stat.war.toFixed(1)) : "—",
   };
 }
@@ -118,6 +126,8 @@ async function getPitcherRow(id: number, name: string): Promise<Row> {
     ip: season ? Number(formatInningsPitched(season.stat.outs)) : "—",
     k9: season ? Number(season.stat.strikeoutsPer9Inn) : "—",
     fip: saber ? Number(saber.stat.fip.toFixed(2)) : "—",
+    xfip: saber ? Number(saber.stat.xfip.toFixed(2)) : "—",
+    fipMinus: saber ? Math.round(saber.stat.fipMinus) : "—",
     war: saber ? Number(saber.stat.war.toFixed(1)) : "—",
   };
 }
@@ -129,7 +139,10 @@ const HITTER_COLUMNS: Column[] = [
   { key: "homeRuns", header: "HR", statKey: "homeRuns" },
   { key: "rbi", header: "RBI", statKey: "rbi" },
   { key: "woba", header: "wOBA", statKey: "woba" },
+  { key: "wraa", header: "wRAA", statKey: "wraa" },
   { key: "wrcPlus", header: "wRC+", statKey: "wrcPlus" },
+  { key: "bsr", header: "BsR", statKey: "bsr" },
+  { key: "def", header: "Def", statKey: "def" },
   { key: "war", header: "WAR", statKey: "war" },
 ];
 
@@ -140,6 +153,8 @@ const PITCHER_COLUMNS: Column[] = [
   { key: "ip", header: "IP", statKey: "ip" },
   { key: "k9", header: "K/9", statKey: "k9" },
   { key: "fip", header: "FIP", statKey: "fip" },
+  { key: "xfip", header: "xFIP", statKey: "xfip" },
+  { key: "fipMinus", header: "FIP-", statKey: "fipMinus" },
   { key: "war", header: "WAR", statKey: "war" },
 ];
 
