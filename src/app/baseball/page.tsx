@@ -65,7 +65,7 @@ function formatInningsPitched(outs: number): string {
 async function fetchPerson(id: number, group: "hitting" | "pitching") {
   const res = await fetch(
     `https://statsapi.mlb.com/api/v1/people/${id}?hydrate=stats(group=${group},type=[season,sabermetrics],season=${SEASON})`,
-    { next: { revalidate: 300 } },
+    { next: { revalidate: 86400 } },
   );
   const data = await res.json();
   return data.people?.[0];
