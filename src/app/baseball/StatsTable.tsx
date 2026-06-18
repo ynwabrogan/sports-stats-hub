@@ -63,14 +63,16 @@ export function StatsTable({
     <div className="relative">
       <div className="absolute bottom-full right-0 z-20 mb-1 w-72 rounded-md border border-gray-200 bg-background p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700">
         {selectedDef ? (
-          <>
+          <div className="text-justify">
             <p className="font-medium text-foreground">{selectedDef.label}</p>
             <p>{selectedDef.simple}</p>
             <p>{selectedDef.abstract}</p>
             {selectedDef.scale && (
-              <p>{selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}</p>
+              <p className="mt-2">
+                {selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}
+              </p>
             )}
-          </>
+          </div>
         ) : (
           <p className="text-gray-400">Click a stat name below for what it means.</p>
         )}
