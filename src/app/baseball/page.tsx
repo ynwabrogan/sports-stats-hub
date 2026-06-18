@@ -106,7 +106,20 @@ type RawPitchingStat = {
   inningsPitched: string;
   strikeoutsPer9Inn: string;
   outs: number;
+  gamesPitched: number;
+  gamesStarted: number;
+  saves: number;
+  holds: number;
 };
+
+function getPitcherRole(stat: RawPitchingStat): string {
+  if (stat.gamesStarted > 0 && stat.gamesStarted / stat.gamesPitched >= 0.5) {
+    return "SP";
+  }
+  if (stat.saves >= 5) return "CL";
+  if (stat.holds > 0) return "RP (Setup)";
+  return "RP";
+}
 
 type RawPitchingSaberStat = {
   war: number;
@@ -173,6 +186,7 @@ async function getPitcherRow(id: number, name: string): Promise<Row> {
     id,
     name,
     team: season?.team?.name ?? "—",
+    role: season ? getPitcherRole(season.stat) : "—",
     record: season
       ? `${season.stat.wins}-${season.stat.losses}`
       : "—",
@@ -203,6 +217,7 @@ const HITTER_COLUMNS: Column[] = [
 ];
 
 const PITCHER_COLUMNS: Column[] = [
+  { key: "role", header: "Pos" },
   { key: "record", header: "W-L", statKey: "wins" },
   { key: "era", header: "ERA", statKey: "era" },
   { key: "whip", header: "WHIP", statKey: "whip" },
