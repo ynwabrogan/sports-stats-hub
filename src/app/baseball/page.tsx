@@ -211,6 +211,7 @@ export default async function BaseballPage() {
           rows={pitcherRows}
           defaultSortKey="war"
           displayLimit={PITCHER_DISPLAY_LIMIT}
+          alignColumnKey="ip"
         />
       </div>
     </main>
