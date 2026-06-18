@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { STAT_DEFINITIONS } from "./stat-definitions";
 
 export type Row = {
@@ -21,35 +21,15 @@ export function StatsTable({
   columns,
   rows,
   defaultSortKey,
-  alignColumnKey,
 }: {
   title: string;
   columns: Column[];
   rows: Row[];
   defaultSortKey: string;
-  /** Key of the column whose left edge the info panel should align to. */
-  alignColumnKey: string;
 }) {
   const [sortKey, setSortKey] = useState(defaultSortKey);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [leftOffset, setLeftOffset] = useState(0);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const alignHeaderRef = useRef<HTMLTableCellElement>(null);
-
-  useEffect(() => {
-    function measure() {
-      const headerRect = alignHeaderRef.current?.getBoundingClientRect();
-      const sectionRect = sectionRef.current?.getBoundingClientRect();
-      if (headerRect && sectionRect) {
-        setLeftOffset(Math.max(headerRect.left - sectionRect.left, 0));
-      }
-    }
-
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
 
   function handleSort(key: string) {
     if (sortKey === key) {
@@ -80,20 +60,22 @@ export function StatsTable({
   const selectedDef = selectedKey ? STAT_DEFINITIONS[selectedKey] : undefined;
 
   return (
-    <div ref={sectionRef}>
-      <div className="mb-3 text-xs text-gray-500" style={{ marginLeft: leftOffset }}>
-        {selectedDef ? (
-          <>
-            <p className="font-medium text-foreground">{selectedDef.label}</p>
-            <p>{selectedDef.simple}</p>
-            <p>{selectedDef.abstract}</p>
-            {selectedDef.scale && (
-              <p>{selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}</p>
-            )}
-          </>
-        ) : (
-          <p className="text-gray-400">Click a stat name below for what it means.</p>
-        )}
+    <div>
+      <div className="flex justify-end mb-3">
+        <div className="w-72 rounded-md border border-gray-200 p-3 text-xs text-gray-500 dark:border-gray-700">
+          {selectedDef ? (
+            <>
+              <p className="font-medium text-foreground">{selectedDef.label}</p>
+              <p>{selectedDef.simple}</p>
+              <p>{selectedDef.abstract}</p>
+              {selectedDef.scale && (
+                <p>{selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}</p>
+              )}
+            </>
+          ) : (
+            <p className="text-gray-400">Click a stat name below for what it means.</p>
+          )}
+        </div>
       </div>
 
       <h2 className="text-xl font-semibold mb-3">{title}</h2>
@@ -109,11 +91,7 @@ export function StatsTable({
                 const isSorted = sortKey === col.key;
                 const arrow = isSorted && sortDir === "asc" ? "▲" : "▼";
                 return (
-                  <th
-                    key={col.key}
-                    ref={col.key === alignColumnKey ? alignHeaderRef : undefined}
-                    className="py-2 pr-4 select-none whitespace-nowrap"
-                  >
+                  <th key={col.key} className="py-2 pr-4 select-none whitespace-nowrap">
                     <span
                       onClick={() => handleSelect(col.statKey)}
                       className={col.statKey ? "cursor-pointer hover:text-blue-600" : ""}

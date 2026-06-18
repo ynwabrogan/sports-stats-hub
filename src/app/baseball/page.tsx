@@ -233,7 +233,6 @@ export default async function BaseballPage() {
         columns={HITTER_COLUMNS}
         rows={hitterRows}
         defaultSortKey="war"
-        alignColumnKey="gamesPlayed"
       />
 
       <div className="mt-16">
@@ -242,7 +241,6 @@ export default async function BaseballPage() {
           columns={PITCHER_COLUMNS}
           rows={pitcherRows}
           defaultSortKey="war"
-          alignColumnKey="record"
         />
       </div>
     </main>
