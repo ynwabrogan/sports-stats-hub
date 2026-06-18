@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useSetHoveredStat } from "./StatInfoPanel";
+import { useEffect, useRef, useState } from "react";
+import { useReportStatColumnLeft, useSetHoveredStat } from "./StatInfoPanel";
 
 export type Row = {
   id: number;
@@ -20,14 +20,32 @@ export function StatsTable({
   columns,
   rows,
   defaultSortKey,
+  alignPanelToColumn,
 }: {
   columns: Column[];
   rows: Row[];
   defaultSortKey: string;
+  /** Key of the column whose left edge the info panel should align to. */
+  alignPanelToColumn?: string;
 }) {
   const [sortKey, setSortKey] = useState(defaultSortKey);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const setHoveredStat = useSetHoveredStat();
+  const reportColumnLeft = useReportStatColumnLeft();
+  const alignHeaderRef = useRef<HTMLTableCellElement>(null);
+
+  useEffect(() => {
+    if (!alignPanelToColumn) return;
+
+    function measure() {
+      const rect = alignHeaderRef.current?.getBoundingClientRect();
+      if (rect) reportColumnLeft(rect.left);
+    }
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [alignPanelToColumn, reportColumnLeft]);
 
   function handleSort(key: string) {
     if (sortKey === key) {
@@ -64,6 +82,7 @@ export function StatsTable({
             {columns.map((col) => (
               <th
                 key={col.key}
+                ref={col.key === alignPanelToColumn ? alignHeaderRef : undefined}
                 onClick={() => handleSort(col.key)}
                 onMouseEnter={() => setHoveredStat(col.statKey ?? null)}
                 className="cursor-pointer select-none py-2 pr-4 hover:text-blue-600"

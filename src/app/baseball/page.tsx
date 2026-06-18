@@ -231,7 +231,12 @@ export default async function BaseballPage() {
 
       <StatInfoProvider>
         <h2 className="text-xl font-semibold mb-3">Hitters</h2>
-        <StatsTable columns={HITTER_COLUMNS} rows={hitterRows} defaultSortKey="war" />
+        <StatsTable
+          columns={HITTER_COLUMNS}
+          rows={hitterRows}
+          defaultSortKey="war"
+          alignPanelToColumn="gamesPlayed"
+        />
 
         <h2 className="text-xl font-semibold mb-3 mt-12">Pitchers</h2>
         <StatsTable columns={PITCHER_COLUMNS} rows={pitcherRows} defaultSortKey="war" />
