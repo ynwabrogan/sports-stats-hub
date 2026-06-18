@@ -30,9 +30,7 @@ export function StatsTable({
 }) {
   const [sortKey, setSortKey] = useState(defaultSortKey);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
-  const [hovered, setHovered] = useState<
-    { key: string; left: number; top: number; direction: "above" | "below" } | null
-  >(null);
+  const [hovered, setHovered] = useState<{ key: string; left: number; top: number } | null>(null);
 
   function handleSort(key: string) {
     if (sortKey === key) {
@@ -49,12 +47,9 @@ export function StatsTable({
       Math.max(rect.left, VIEWPORT_MARGIN),
       window.innerWidth - TOOLTIP_WIDTH - VIEWPORT_MARGIN,
     );
-    // Prefer opening above the header so the tooltip never covers the
-    // stats in the rows below it. Fall back to below only if there
-    // isn't enough room above (e.g. header scrolled near the top).
-    const direction = rect.top > 200 ? "above" : "below";
-    const top = direction === "above" ? rect.top - 4 : rect.bottom + 4;
-    setHovered({ key, left, top, direction });
+    // Anchor right at the header row itself, so it never drifts up over
+    // the page title or down over the stat rows below.
+    setHovered({ key, left, top: rect.top });
   }
 
   const sorted = [...rows].sort((a, b) => {
@@ -77,6 +72,7 @@ export function StatsTable({
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="border-b border-gray-300">
+            <th className="py-2 pr-4">#</th>
             <th className="py-2 pr-4">Player</th>
             <th className="py-2 pr-4">Team</th>
             {columns.map((col) => (
@@ -94,8 +90,9 @@ export function StatsTable({
           </tr>
         </thead>
         <tbody>
-          {sorted.map((row) => (
+          {sorted.map((row, i) => (
             <tr key={row.id} className="border-b border-gray-100">
+              <td className="py-2 pr-4 text-gray-400">{i + 1}</td>
               <td className="py-2 pr-4 font-medium">{row.name}</td>
               <td className="py-2 pr-4">{row.team}</td>
               {columns.map((col) => {
@@ -114,11 +111,7 @@ export function StatsTable({
       {hovered && hoveredDef && (
         <div
           className="pointer-events-none fixed z-50 w-56 max-h-[70vh] overflow-y-auto rounded-md border border-gray-200 bg-white p-2 text-[11px] leading-snug font-normal normal-case text-gray-700 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
-          style={{
-            left: hovered.left,
-            top: hovered.top,
-            transform: hovered.direction === "above" ? "translateY(-100%)" : undefined,
-          }}
+          style={{ left: hovered.left, top: hovered.top }}
         >
           <p className="mb-1 font-semibold text-gray-900 dark:text-gray-50">
             {hoveredDef.label}
