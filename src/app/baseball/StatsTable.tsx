@@ -148,7 +148,10 @@ export function StatsTable({
             </thead>
             <tbody>
               {sorted.map((row, i) => (
-                <tr key={row.id} className="border-b border-gray-100">
+                <tr
+                  key={row.id}
+                  className="relative border-b border-gray-100 transition-transform duration-100 hover:z-10 hover:scale-[1.015] hover:bg-gray-50 hover:shadow-md dark:hover:bg-gray-800"
+                >
                   <td className="py-0.5 pr-2 text-gray-400">{i + 1}</td>
                   <td className="py-0.5 pr-2 font-medium">{row.name}</td>
                   <td className="py-0.5 pr-2">{row.team}</td>
