@@ -61,7 +61,7 @@ export function StatsTable({
 
   return (
     <div className="relative">
-      <div className="absolute top-0 right-0 z-20 w-72 rounded-md border border-gray-200 bg-background p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700">
+      <div className="absolute bottom-full right-0 z-20 mb-1 w-72 rounded-md border border-gray-200 bg-background p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700">
         {selectedDef ? (
           <>
             <p className="font-medium text-foreground">{selectedDef.label}</p>
