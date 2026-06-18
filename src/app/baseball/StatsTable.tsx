@@ -60,27 +60,28 @@ export function StatsTable({
   const selectedDef = selectedKey ? STAT_DEFINITIONS[selectedKey] : undefined;
 
   return (
-    <div className="relative">
-      <div className="absolute bottom-full right-0 z-20 mb-1 w-72 rounded-md border border-gray-200 bg-background p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700">
-        {selectedDef ? (
-          <div className="text-justify">
-            <p className="font-medium text-foreground">{selectedDef.label}</p>
-            <p>{selectedDef.simple}</p>
-            <p>{selectedDef.abstract}</p>
-            {selectedDef.scale && (
-              <p className="mt-2">
-                {selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}
-              </p>
-            )}
-          </div>
-        ) : (
-          <p className="text-gray-400">Click a stat name below for what it means.</p>
-        )}
-      </div>
-
+    <div>
       <h2 className="text-xl font-semibold mb-3">{title}</h2>
 
-      <div className="overflow-x-auto">
+      <div className="relative">
+        <div className="absolute bottom-full right-0 z-20 mb-1 w-72 rounded-md border border-gray-200 bg-background p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700">
+          {selectedDef ? (
+            <div className="text-justify">
+              <p className="font-medium text-foreground">{selectedDef.label}</p>
+              <p>{selectedDef.simple}</p>
+              <p>{selectedDef.abstract}</p>
+              {selectedDef.scale && (
+                <p className="mt-2">
+                  {selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-gray-400">Click a stat name below for what it means.</p>
+          )}
+        </div>
+
+        <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-gray-300">
@@ -129,6 +130,7 @@ export function StatsTable({
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
