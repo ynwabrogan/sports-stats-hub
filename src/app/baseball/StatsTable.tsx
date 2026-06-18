@@ -27,7 +27,7 @@ export function StatsTable({
   columns: Column[];
   rows: Row[];
   defaultSortKey: string;
-  /** Key of the column whose left edge the expandable info panel should align to. */
+  /** Key of the column whose left edge the info panel should align to. */
   alignColumnKey: string;
 }) {
   const [sortKey, setSortKey] = useState(defaultSortKey);
@@ -80,41 +80,29 @@ export function StatsTable({
   const selectedDef = selectedKey ? STAT_DEFINITIONS[selectedKey] : undefined;
 
   return (
-    <div ref={sectionRef} className="relative">
-      <div className="flex items-baseline justify-between mb-3">
+    <div ref={sectionRef}>
+      <div className="flex items-start justify-between gap-4 mb-3">
         <h2 className="text-xl font-semibold">{title}</h2>
-      </div>
-
-      {selectedDef && (
         <div
-          className="absolute bottom-full z-30 mb-1 max-h-60 overflow-y-auto rounded-md border border-gray-200 bg-white p-3 text-xs text-gray-700 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
-          style={{ left: leftOffset, right: 0 }}
+          className="h-20 w-full max-w-sm overflow-y-auto text-xs text-gray-500"
+          style={{ marginLeft: leftOffset }}
         >
-          <p className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-50">
-            {selectedDef.label}
-          </p>
-          <p className="mb-1.5">
-            <span className="font-medium">What it is: </span>
-            {selectedDef.simple}
-          </p>
-          <p className={selectedDef.scale ? "mb-1.5" : ""}>
-            <span className="font-medium">What it tells you: </span>
-            {selectedDef.abstract}
-          </p>
-          {selectedDef.scale && (
-            <div className="border-t border-gray-200 pt-1.5 dark:border-gray-700">
-              <p className="mb-0.5 font-medium">Scale:</p>
-              <ul className="space-y-0">
-                {selectedDef.scale.map((tier) => (
-                  <li key={tier.label}>
-                    {tier.emoji} {tier.label}: {tier.range}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {selectedDef ? (
+            <>
+              <p className="font-medium text-foreground">{selectedDef.label}</p>
+              <p>{selectedDef.simple}</p>
+              <p>{selectedDef.abstract}</p>
+              {selectedDef.scale && (
+                <p>
+                  {selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="text-gray-400">Click a stat name below for what it means.</p>
           )}
         </div>
-      )}
+      </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
@@ -125,6 +113,7 @@ export function StatsTable({
               <th className="py-2 pr-4">Team</th>
               {columns.map((col) => {
                 const isSorted = sortKey === col.key;
+                const arrow = isSorted && sortDir === "asc" ? "▲" : "▼";
                 return (
                   <th
                     key={col.key}
@@ -143,9 +132,11 @@ export function StatsTable({
                     </span>{" "}
                     <span
                       onClick={() => handleSort(col.key)}
-                      className="cursor-pointer rounded px-1 text-gray-400 hover:bg-gray-200 hover:text-gray-700 dark:hover:bg-gray-700"
+                      className={`cursor-pointer rounded px-1 hover:bg-gray-200 dark:hover:bg-gray-700 ${
+                        isSorted ? "text-foreground" : "text-gray-300 dark:text-gray-600"
+                      }`}
                     >
-                      {isSorted ? (sortDir === "asc" ? "▲" : "▼") : "⇕"}
+                      {arrow}
                     </span>
                   </th>
                 );
