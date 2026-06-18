@@ -60,22 +60,20 @@ export function StatsTable({
   const selectedDef = selectedKey ? STAT_DEFINITIONS[selectedKey] : undefined;
 
   return (
-    <div>
-      <div className="flex justify-end mb-3">
-        <div className="w-72 rounded-md border border-gray-200 p-3 text-xs text-gray-500 dark:border-gray-700">
-          {selectedDef ? (
-            <>
-              <p className="font-medium text-foreground">{selectedDef.label}</p>
-              <p>{selectedDef.simple}</p>
-              <p>{selectedDef.abstract}</p>
-              {selectedDef.scale && (
-                <p>{selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}</p>
-              )}
-            </>
-          ) : (
-            <p className="text-gray-400">Click a stat name below for what it means.</p>
-          )}
-        </div>
+    <div className="relative">
+      <div className="absolute top-0 right-0 z-20 w-72 rounded-md border border-gray-200 bg-background p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700">
+        {selectedDef ? (
+          <>
+            <p className="font-medium text-foreground">{selectedDef.label}</p>
+            <p>{selectedDef.simple}</p>
+            <p>{selectedDef.abstract}</p>
+            {selectedDef.scale && (
+              <p>{selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}</p>
+            )}
+          </>
+        ) : (
+          <p className="text-gray-400">Click a stat name below for what it means.</p>
+        )}
       </div>
 
       <h2 className="text-xl font-semibold mb-3">{title}</h2>
