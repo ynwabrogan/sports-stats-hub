@@ -66,17 +66,17 @@ export function StatsTable({
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-3">{title}</h2>
+      <h2 className="text-lg font-semibold mb-2">{title}</h2>
 
       <div className="relative">
-        <div className="absolute bottom-full right-0 z-20 mb-1 w-72 rounded-md border border-gray-200 bg-background p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700">
+        <div className="absolute bottom-full right-0 z-20 mb-1 w-64 rounded-md border border-gray-200 bg-background p-2 text-[11px] leading-snug text-gray-500 shadow-sm dark:border-gray-700">
           {selectedDef ? (
             <div className="text-justify">
               <p className="font-medium text-foreground">{selectedDef.label}</p>
               <p>{selectedDef.simple}</p>
               <p>{selectedDef.abstract}</p>
               {selectedDef.scale && (
-                <p className="mt-2">
+                <p className="mt-1.5">
                   {selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}
                 </p>
               )}
@@ -87,54 +87,54 @@ export function StatsTable({
         </div>
 
         <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-gray-300">
-              <th className="py-2 pr-4">#</th>
-              <th className="py-2 pr-4">Player</th>
-              <th className="py-2 pr-4">Team</th>
-              {columns.map((col) => {
-                const isSorted = sortKey === col.key;
-                const arrow = isSorted && sortDir === "asc" ? "▲" : "▼";
-                return (
-                  <th key={col.key} className="py-2 pr-4 select-none whitespace-nowrap">
-                    <span
-                      onClick={() => handleSelect(col.statKey)}
-                      className={col.statKey ? "cursor-pointer hover:text-blue-600" : ""}
-                    >
-                      {col.header}
-                    </span>{" "}
-                    <span
-                      onClick={() => handleSort(col.key)}
-                      className={`cursor-pointer hover:text-blue-600 ${
-                        isSorted ? "text-foreground" : "text-gray-300 dark:text-gray-600"
-                      }`}
-                    >
-                      {arrow}
-                    </span>
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((row, i) => (
-              <tr key={row.id} className="border-b border-gray-100">
-                <td className="py-2 pr-4 text-gray-400">{i + 1}</td>
-                <td className="py-2 pr-4 font-medium">{row.name}</td>
-                <td className="py-2 pr-4">{row.team}</td>
+          <table className="w-full border-collapse text-left text-xs">
+            <thead>
+              <tr className="border-b border-gray-300">
+                <th className="py-1 pr-2">#</th>
+                <th className="py-1 pr-2">Player</th>
+                <th className="py-1 pr-2">Team</th>
                 {columns.map((col) => {
-                  const value = row[col.key];
+                  const isSorted = sortKey === col.key;
+                  const arrow = isSorted && sortDir === "asc" ? "▲" : "▼";
                   return (
-                    <td key={col.key} className="py-2 pr-4">
-                      {value == null ? "—" : value}
-                    </td>
+                    <th key={col.key} className="py-1 pr-2 select-none whitespace-nowrap">
+                      <span
+                        onClick={() => handleSelect(col.statKey)}
+                        className={col.statKey ? "cursor-pointer hover:text-blue-600" : ""}
+                      >
+                        {col.header}
+                      </span>{" "}
+                      <span
+                        onClick={() => handleSort(col.key)}
+                        className={`cursor-pointer hover:text-blue-600 ${
+                          isSorted ? "text-foreground" : "text-gray-300 dark:text-gray-600"
+                        }`}
+                      >
+                        {arrow}
+                      </span>
+                    </th>
                   );
                 })}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sorted.map((row, i) => (
+                <tr key={row.id} className="border-b border-gray-100">
+                  <td className="py-0.5 pr-2 text-gray-400">{i + 1}</td>
+                  <td className="py-0.5 pr-2 font-medium">{row.name}</td>
+                  <td className="py-0.5 pr-2">{row.team}</td>
+                  {columns.map((col) => {
+                    const value = row[col.key];
+                    return (
+                      <td key={col.key} className="py-0.5 pr-2">
+                        {value == null ? "—" : value}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

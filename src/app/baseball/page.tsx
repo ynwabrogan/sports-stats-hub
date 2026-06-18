@@ -1,10 +1,10 @@
 import { StatsTable, type Column, type Row } from "./StatsTable";
 
 const SEASON = new Date().getFullYear().toString();
-const HITTER_POOL_SIZE = 200;
-const PITCHER_POOL_SIZE = 100;
-const HITTER_DISPLAY_LIMIT = 50;
-const PITCHER_DISPLAY_LIMIT = 20;
+const HITTER_POOL_SIZE = 300;
+const PITCHER_POOL_SIZE = 150;
+const HITTER_DISPLAY_LIMIT = 100;
+const PITCHER_DISPLAY_LIMIT = 50;
 
 type LeaderEntry = { id: number; name: string };
 
@@ -188,9 +188,9 @@ export default async function BaseballPage() {
   ]);
 
   return (
-    <main className="min-h-screen p-8 sm:p-16">
-      <h1 className="text-3xl font-bold mb-2">Baseball Stats</h1>
-      <p className="text-sm text-gray-500 mb-10">
+    <main className="min-h-screen p-6 sm:p-10">
+      <h1 className="text-2xl font-bold mb-1">Baseball Stats</h1>
+      <p className="text-xs text-gray-500 mb-6">
         Live {SEASON} regular season stats, via the MLB Stats API. Click a
         stat name for what it means, click the arrow next to it to sort.
       </p>
@@ -203,7 +203,7 @@ export default async function BaseballPage() {
         displayLimit={HITTER_DISPLAY_LIMIT}
       />
 
-      <div className="mt-16">
+      <div className="mt-10">
         <StatsTable
           title="Pitchers"
           columns={PITCHER_COLUMNS}
