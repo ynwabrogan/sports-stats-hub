@@ -21,11 +21,14 @@ export function StatsTable({
   columns,
   rows,
   defaultSortKey,
+  displayLimit,
 }: {
   title: string;
   columns: Column[];
   rows: Row[];
   defaultSortKey: string;
+  /** Only show this many rows after sorting, e.g. top 50 by whichever stat is active. */
+  displayLimit: number;
 }) {
   const [sortKey, setSortKey] = useState(defaultSortKey);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
@@ -45,17 +48,19 @@ export function StatsTable({
     setSelectedKey((current) => (current === statKey ? null : statKey));
   }
 
-  const sorted = [...rows].sort((a, b) => {
-    const av = a[sortKey];
-    const bv = b[sortKey];
-    if (av == null) return 1;
-    if (bv == null) return -1;
-    const cmp =
-      typeof av === "number" && typeof bv === "number"
-        ? av - bv
-        : String(av).localeCompare(String(bv));
-    return sortDir === "asc" ? cmp : -cmp;
-  });
+  const sorted = [...rows]
+    .sort((a, b) => {
+      const av = a[sortKey];
+      const bv = b[sortKey];
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      const cmp =
+        typeof av === "number" && typeof bv === "number"
+          ? av - bv
+          : String(av).localeCompare(String(bv));
+      return sortDir === "asc" ? cmp : -cmp;
+    })
+    .slice(0, displayLimit);
 
   const selectedDef = selectedKey ? STAT_DEFINITIONS[selectedKey] : undefined;
 

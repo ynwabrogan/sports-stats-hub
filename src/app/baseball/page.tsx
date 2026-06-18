@@ -1,82 +1,29 @@
 import { StatsTable, type Column, type Row } from "./StatsTable";
 
-const HITTERS = [
-  { id: 672640, name: "Otto Lopez" },
-  { id: 650333, name: "Luis Arraez" },
-  { id: 670541, name: "Yordan Alvarez" },
-  { id: 677951, name: "Bobby Witt Jr." },
-  { id: 676391, name: "Ernie Clement" },
-  { id: 650490, name: "Yandy Díaz" },
-  { id: 808982, name: "Jung Hoo Lee" },
-  { id: 691023, name: "Jordan Walker" },
-  { id: 676475, name: "Alec Burleson" },
-  { id: 669364, name: "Xavier Edwards" },
-  { id: 669016, name: "Brandon Marsh" },
-  { id: 682985, name: "Riley Greene" },
-  { id: 665487, name: "Fernando Tatis Jr." },
-  { id: 695578, name: "James Wood" },
-  { id: 673962, name: "Josh Jung" },
-  { id: 681624, name: "Andy Pages" },
-  { id: 682928, name: "CJ Abrams" },
-  { id: 691718, name: "Pete Crow-Armstrong" },
-  { id: 669127, name: "Shea Langeliers" },
-  { id: 645277, name: "Ozzie Albies" },
-  { id: 668227, name: "Randy Arozarena" },
-  { id: 666182, name: "Bo Bichette" },
-  { id: 661388, name: "William Contreras" },
-  { id: 518692, name: "Freddie Freeman" },
-  { id: 701762, name: "Nick Kurtz" },
-  { id: 660271, name: "Shohei Ohtani" },
-  { id: 621566, name: "Matt Olson" },
-  { id: 671739, name: "Michael Harris II" },
-  { id: 695734, name: "Daylen Lile" },
-  { id: 805808, name: "Kevin McGonigle" },
-  { id: 677800, name: "Wilyer Abreu" },
-  { id: 666176, name: "Jo Adell" },
-  { id: 693304, name: "Nick Gonzales" },
-  { id: 668804, name: "Bryan Reynolds" },
-  { id: 677594, name: "Julio Rodríguez" },
-  { id: 608324, name: "Alex Bregman" },
-  { id: 691406, name: "Junior Caminero" },
-  { id: 682998, name: "Corbin Carroll" },
-  { id: 687859, name: "Troy Johnston" },
-  { id: 606466, name: "Ketel Marte" },
-  { id: 669477, name: "Casey Schmitt" },
-  { id: 621439, name: "Byron Buxton" },
-  { id: 575929, name: "Willson Contreras" },
-  { id: 805367, name: "Chase Meidroth" },
-  { id: 700250, name: "Ben Rice" },
-  { id: 624413, name: "Pete Alonso" },
-  { id: 666018, name: "Jonathan Aranda" },
-  { id: 641355, name: "Cody Bellinger" },
-  { id: 607043, name: "Brandon Nimmo" },
-  { id: 678882, name: "Ceddanne Rafaela" },
-];
-
-const PITCHERS = [
-  { id: 645261, name: "Sandy Alcantara" },
-  { id: 650911, name: "Cristopher Sánchez" },
-  { id: 608379, name: "Michael Wacha" },
-  { id: 693645, name: "Cam Schlittler" },
-  { id: 693821, name: "Bryce Elder" },
-  { id: 593958, name: "Eduardo Rodriguez" },
-  { id: 672282, name: "Reid Detmers" },
-  { id: 543135, name: "Nathan Eovaldi" },
-  { id: 592332, name: "Kevin Gausman" },
-  { id: 694819, name: "Jacob Misiorowski" },
-  { id: 667755, name: "José Soriano" },
-  { id: 669302, name: "Logan Gilbert" },
-  { id: 684007, name: "Shota Imanaga" },
-  { id: 668909, name: "Gavin Williams" },
-  { id: 666200, name: "Jesús Luzardo" },
-  { id: 808967, name: "Yoshinobu Yamamoto" },
-  { id: 650633, name: "Michael King" },
-  { id: 676974, name: "Max Meyer" },
-  { id: 677952, name: "Braxton Ashcraft" },
-  { id: 676440, name: "Tanner Bibee" },
-];
-
 const SEASON = new Date().getFullYear().toString();
+const HITTER_POOL_SIZE = 200;
+const PITCHER_POOL_SIZE = 100;
+const HITTER_DISPLAY_LIMIT = 50;
+const PITCHER_DISPLAY_LIMIT = 20;
+
+type LeaderEntry = { id: number; name: string };
+
+async function getLeaderPool(
+  leaderCategory: string,
+  statGroup: "hitting" | "pitching",
+  limit: number,
+): Promise<LeaderEntry[]> {
+  const res = await fetch(
+    `https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=${leaderCategory}&statGroup=${statGroup}&season=${SEASON}&sportId=1&limit=${limit}`,
+    { next: { revalidate: 86400 } },
+  );
+  const data = await res.json();
+  const leaders = data.leagueLeaders?.[0]?.leaders ?? [];
+  return leaders.map((l: { person: { id: number; fullName: string } }) => ({
+    id: l.person.id,
+    name: l.person.fullName,
+  }));
+}
 
 type StatSplit<T> = { stat: T; team?: { name: string } };
 type StatGroup<T> = { type?: { displayName?: string }; splits?: StatSplit<T>[] };
@@ -230,9 +177,14 @@ const PITCHER_COLUMNS: Column[] = [
 ];
 
 export default async function BaseballPage() {
+  const [hitterPool, pitcherPool] = await Promise.all([
+    getLeaderPool("atBats", "hitting", HITTER_POOL_SIZE),
+    getLeaderPool("inningsPitched", "pitching", PITCHER_POOL_SIZE),
+  ]);
+
   const [hitterRows, pitcherRows] = await Promise.all([
-    Promise.all(HITTERS.map((p) => getHitterRow(p.id, p.name))),
-    Promise.all(PITCHERS.map((p) => getPitcherRow(p.id, p.name))),
+    Promise.all(hitterPool.map((p) => getHitterRow(p.id, p.name))),
+    Promise.all(pitcherPool.map((p) => getPitcherRow(p.id, p.name))),
   ]);
 
   return (
@@ -248,6 +200,7 @@ export default async function BaseballPage() {
         columns={HITTER_COLUMNS}
         rows={hitterRows}
         defaultSortKey="war"
+        displayLimit={HITTER_DISPLAY_LIMIT}
       />
 
       <div className="mt-16">
@@ -256,6 +209,7 @@ export default async function BaseballPage() {
           columns={PITCHER_COLUMNS}
           rows={pitcherRows}
           defaultSortKey="war"
+          displayLimit={PITCHER_DISPLAY_LIMIT}
         />
       </div>
     </main>
