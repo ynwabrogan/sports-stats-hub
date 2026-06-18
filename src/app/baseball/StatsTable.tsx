@@ -81,28 +81,22 @@ export function StatsTable({
 
   return (
     <div ref={sectionRef}>
-      <div className="flex items-start justify-between gap-4 mb-3">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <div
-          className="h-20 w-full max-w-sm overflow-y-auto text-xs text-gray-500"
-          style={{ marginLeft: leftOffset }}
-        >
-          {selectedDef ? (
-            <>
-              <p className="font-medium text-foreground">{selectedDef.label}</p>
-              <p>{selectedDef.simple}</p>
-              <p>{selectedDef.abstract}</p>
-              {selectedDef.scale && (
-                <p>
-                  {selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}
-                </p>
-              )}
-            </>
-          ) : (
-            <p className="text-gray-400">Click a stat name below for what it means.</p>
-          )}
-        </div>
+      <div className="mb-3 text-xs text-gray-500" style={{ marginLeft: leftOffset }}>
+        {selectedDef ? (
+          <>
+            <p className="font-medium text-foreground">{selectedDef.label}</p>
+            <p>{selectedDef.simple}</p>
+            <p>{selectedDef.abstract}</p>
+            {selectedDef.scale && (
+              <p>{selectedDef.scale.map((tier) => `${tier.emoji} ${tier.range}`).join("  ")}</p>
+            )}
+          </>
+        ) : (
+          <p className="text-gray-400">Click a stat name below for what it means.</p>
+        )}
       </div>
+
+      <h2 className="text-xl font-semibold mb-3">{title}</h2>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
@@ -118,21 +112,17 @@ export function StatsTable({
                   <th
                     key={col.key}
                     ref={col.key === alignColumnKey ? alignHeaderRef : undefined}
-                    className="py-2 pr-4 select-none"
+                    className="py-2 pr-4 select-none whitespace-nowrap"
                   >
                     <span
                       onClick={() => handleSelect(col.statKey)}
-                      className={
-                        col.statKey
-                          ? "cursor-pointer rounded px-0.5 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950"
-                          : ""
-                      }
+                      className={col.statKey ? "cursor-pointer hover:text-blue-600" : ""}
                     >
                       {col.header}
                     </span>{" "}
                     <span
                       onClick={() => handleSort(col.key)}
-                      className={`cursor-pointer rounded px-1 hover:bg-gray-200 dark:hover:bg-gray-700 ${
+                      className={`cursor-pointer hover:text-blue-600 ${
                         isSorted ? "text-foreground" : "text-gray-300 dark:text-gray-600"
                       }`}
                     >
