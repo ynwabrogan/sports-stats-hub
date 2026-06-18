@@ -201,6 +201,7 @@ export default async function BaseballPage() {
         rows={hitterRows}
         defaultSortKey="war"
         displayLimit={HITTER_DISPLAY_LIMIT}
+        alignColumnKey="woba"
       />
 
       <div className="mt-10">

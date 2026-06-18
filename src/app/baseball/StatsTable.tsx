@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { STAT_DEFINITIONS } from "./stat-definitions";
 
 export type Row = {
@@ -22,6 +22,7 @@ export function StatsTable({
   rows,
   defaultSortKey,
   displayLimit,
+  alignColumnKey,
 }: {
   title: string;
   columns: Column[];
@@ -29,10 +30,31 @@ export function StatsTable({
   defaultSortKey: string;
   /** Only show this many rows after sorting, e.g. top 50 by whichever stat is active. */
   displayLimit: number;
+  /** Key of the column whose left edge the info panel should stretch to. */
+  alignColumnKey?: string;
 }) {
   const [sortKey, setSortKey] = useState(defaultSortKey);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [leftOffset, setLeftOffset] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const alignHeaderRef = useRef<HTMLTableCellElement>(null);
+
+  useEffect(() => {
+    if (!alignColumnKey) return;
+
+    function measure() {
+      const headerRect = alignHeaderRef.current?.getBoundingClientRect();
+      const sectionRect = sectionRef.current?.getBoundingClientRect();
+      if (headerRect && sectionRect) {
+        setLeftOffset(Math.max(headerRect.left - sectionRect.left, 0));
+      }
+    }
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [alignColumnKey]);
 
   function handleSort(key: string) {
     if (sortKey === key) {
@@ -68,8 +90,11 @@ export function StatsTable({
     <div>
       <h2 className="text-lg font-semibold mb-2">{title}</h2>
 
-      <div className="relative">
-        <div className="absolute bottom-full right-0 z-20 mb-1 w-64 rounded-md border border-gray-200 bg-background p-2 text-[11px] leading-snug text-gray-500 shadow-sm dark:border-gray-700">
+      <div ref={sectionRef} className="relative">
+        <div
+          className="absolute bottom-full right-0 z-20 mb-1 w-64 rounded-md border border-gray-200 bg-background p-2 text-[11px] leading-snug text-gray-500 shadow-sm dark:border-gray-700"
+          style={alignColumnKey ? { left: leftOffset ?? undefined, width: "auto" } : undefined}
+        >
           {selectedDef ? (
             <div className="text-justify">
               <p className="font-medium text-foreground">{selectedDef.label}</p>
@@ -97,7 +122,11 @@ export function StatsTable({
                   const isSorted = sortKey === col.key;
                   const arrow = isSorted && sortDir === "asc" ? "▲" : "▼";
                   return (
-                    <th key={col.key} className="py-1 pr-2 select-none whitespace-nowrap">
+                    <th
+                      key={col.key}
+                      ref={col.key === alignColumnKey ? alignHeaderRef : undefined}
+                      className="py-1 pr-2 select-none whitespace-nowrap"
+                    >
                       <span
                         onClick={() => handleSelect(col.statKey)}
                         className={col.statKey ? "cursor-pointer hover:text-blue-600" : ""}
