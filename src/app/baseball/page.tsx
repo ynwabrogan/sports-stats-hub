@@ -1,5 +1,4 @@
 import { StatsTable, type Column, type Row } from "./StatsTable";
-import { StatInfoProvider } from "./StatInfoPanel";
 
 const HITTERS = [
   { id: 672640, name: "Otto Lopez" },
@@ -224,23 +223,28 @@ export default async function BaseballPage() {
   return (
     <main className="min-h-screen p-8 sm:p-16">
       <h1 className="text-3xl font-bold mb-2">Baseball Stats</h1>
-      <p className="text-sm text-gray-500 mb-4">
+      <p className="text-sm text-gray-500 mb-10">
         Live {SEASON} regular season stats, via the MLB Stats API. Click a
-        column to sort, hover a column header for what it means.
+        stat name for what it means, click the arrow next to it to sort.
       </p>
 
-      <StatInfoProvider>
-        <h2 className="text-xl font-semibold mb-3">Hitters</h2>
-        <StatsTable
-          columns={HITTER_COLUMNS}
-          rows={hitterRows}
-          defaultSortKey="war"
-          alignPanelToColumn="gamesPlayed"
-        />
+      <StatsTable
+        title="Hitters"
+        columns={HITTER_COLUMNS}
+        rows={hitterRows}
+        defaultSortKey="war"
+        alignColumnKey="gamesPlayed"
+      />
 
-        <h2 className="text-xl font-semibold mb-3 mt-12">Pitchers</h2>
-        <StatsTable columns={PITCHER_COLUMNS} rows={pitcherRows} defaultSortKey="war" />
-      </StatInfoProvider>
+      <div className="mt-16">
+        <StatsTable
+          title="Pitchers"
+          columns={PITCHER_COLUMNS}
+          rows={pitcherRows}
+          defaultSortKey="war"
+          alignColumnKey="record"
+        />
+      </div>
     </main>
   );
 }
