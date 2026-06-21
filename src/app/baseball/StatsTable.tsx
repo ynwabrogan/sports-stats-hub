@@ -1,8 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { STAT_DEFINITIONS } from "./stat-definitions";
+
+function headshotUrl(id: number) {
+  return `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/q_auto:best/v1/people/${id}/headshot/67/current`;
+}
 
 export type Row = {
   id: number;
@@ -37,6 +41,7 @@ export function StatsTable({
   const [sortKey, setSortKey] = useState(defaultSortKey);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [expandedPlayerId, setExpandedPlayerId] = useState<number | null>(null);
   const [leftOffset, setLeftOffset] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const alignHeaderRef = useRef<HTMLTableCellElement>(null);
@@ -69,6 +74,10 @@ export function StatsTable({
   function handleSelect(statKey: string | undefined) {
     if (!statKey) return;
     setSelectedKey((current) => (current === statKey ? null : statKey));
+  }
+
+  function handleToggleExpand(id: number) {
+    setExpandedPlayerId((current) => (current === id ? null : id));
   }
 
   const sorted = [...rows]
@@ -149,26 +158,48 @@ export function StatsTable({
             </thead>
             <tbody>
               {sorted.map((row, i) => (
-                <tr
-                  key={row.id}
-                  className="relative origin-left border-b border-gray-100 transition-transform duration-100 hover:z-10 hover:scale-[1.015] hover:bg-gray-50 hover:shadow-md dark:hover:bg-gray-800"
-                >
-                  <td className="py-0.5 pr-2 text-gray-400">{i + 1}</td>
-                  <td className="py-0.5 pr-2 font-medium">
-                    <Link href={`/baseball/players/${row.id}`} className="hover:text-blue-600">
-                      {row.name}
-                    </Link>
-                  </td>
-                  <td className="py-0.5 pr-2">{row.team}</td>
-                  {columns.map((col) => {
-                    const value = row[col.key];
-                    return (
-                      <td key={col.key} className="py-0.5 pr-2">
-                        {value == null ? "—" : value}
+                <Fragment key={row.id}>
+                  <tr
+                    className="relative origin-left border-b border-gray-100 transition-transform duration-100 hover:z-10 hover:scale-[1.015] hover:bg-gray-50 hover:shadow-md dark:hover:bg-gray-800"
+                  >
+                    <td className="py-0.5 pr-2 text-gray-400">{i + 1}</td>
+                    <td className="py-0.5 pr-2 font-medium">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleExpand(row.id)}
+                        className="cursor-pointer hover:text-blue-600"
+                      >
+                        {row.name}
+                      </button>
+                    </td>
+                    <td className="py-0.5 pr-2">{row.team}</td>
+                    {columns.map((col) => {
+                      const value = row[col.key];
+                      return (
+                        <td key={col.key} className="py-0.5 pr-2">
+                          {value == null ? "—" : value}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {expandedPlayerId === row.id && (
+                    <tr className="border-b border-gray-100 bg-gray-50 dark:bg-gray-900">
+                      <td colSpan={columns.length + 3} className="p-3">
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={headshotUrl(row.id)}
+                            alt={row.name}
+                            width={64}
+                            height={64}
+                            className="rounded-md bg-gray-200 dark:bg-gray-700"
+                            unoptimized
+                          />
+                          <span className="font-medium text-foreground">{row.name}</span>
+                        </div>
                       </td>
-                    );
-                  })}
-                </tr>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
             </tbody>
           </table>

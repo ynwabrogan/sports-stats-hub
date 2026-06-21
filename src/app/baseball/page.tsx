@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { StatsTable, type Column, type Row } from "./StatsTable";
 
 const SEASON = new Date().getFullYear().toString();
@@ -176,24 +177,40 @@ const PITCHER_COLUMNS: Column[] = [
   { key: "war", header: "WAR", statKey: "war" },
 ];
 
-export default async function BaseballPage() {
-  const [hitterPool, pitcherPool] = await Promise.all([
-    getLeaderPool("atBats", "hitting", HITTER_POOL_SIZE),
-    getLeaderPool("inningsPitched", "pitching", PITCHER_POOL_SIZE),
-  ]);
+const getCachedStats = unstable_cache(
+  async () => {
+    const [hitterPool, pitcherPool] = await Promise.all([
+      getLeaderPool("atBats", "hitting", HITTER_POOL_SIZE),
+      getLeaderPool("inningsPitched", "pitching", PITCHER_POOL_SIZE),
+    ]);
 
-  const [hitterRows, pitcherRows] = await Promise.all([
-    Promise.all(hitterPool.map((p) => getHitterRow(p.id, p.name))),
-    Promise.all(pitcherPool.map((p) => getPitcherRow(p.id, p.name))),
-  ]);
+    const [hitterRows, pitcherRows] = await Promise.all([
+      Promise.all(hitterPool.map((p) => getHitterRow(p.id, p.name))),
+      Promise.all(pitcherPool.map((p) => getPitcherRow(p.id, p.name))),
+    ]);
+
+    return { hitterRows, pitcherRows, fetchedAt: new Date().toISOString() };
+  },
+  ["baseball-stats", SEASON],
+  { revalidate: 86400 },
+);
+
+export default async function BaseballPage() {
+  const { hitterRows, pitcherRows, fetchedAt } = await getCachedStats();
+
+  const lastUpdated = new Date(fetchedAt).toLocaleString("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 
   return (
     <main className="min-h-screen p-6 sm:p-10">
       <h1 className="text-2xl font-bold mb-1">Baseball Stats</h1>
-      <p className="text-xs text-gray-500 mb-6">
+      <p className="text-xs text-gray-500">
         Live {SEASON} regular season stats, via the MLB Stats API. Click a
         stat name for what it means, click the arrow next to it to sort.
       </p>
+      <p className="text-xs text-gray-400 mb-6">Stats last updated: {lastUpdated}</p>
 
       <StatsTable
         title="Hitters"
