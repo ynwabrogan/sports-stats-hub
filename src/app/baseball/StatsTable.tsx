@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Fragment, useEffect, useRef, useState } from "react";
+import { PlayerBio } from "./PlayerBio";
 import { STAT_DEFINITIONS } from "./stat-definitions";
 import { TrendChart } from "./TrendChart";
 
@@ -210,7 +211,7 @@ export function StatsTable({
                   {expandedPlayerId === row.id && (
                     <tr className="border-b border-border bg-background">
                       <td colSpan={columns.length + 3} className="p-3">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-start gap-4">
                           <Image
                             src={headshotUrl(row.id)}
                             alt={row.name}
@@ -219,7 +220,10 @@ export function StatsTable({
                             className="rounded-md bg-border"
                             unoptimized
                           />
-                          <span className="font-medium text-foreground">{row.name}</span>
+                          <div>
+                            <p className="mb-1 font-medium text-foreground">{row.name}</p>
+                            <PlayerBio playerId={row.id} />
+                          </div>
                           {showTrend && <TrendChart playerId={row.id} />}
                         </div>
                       </td>
