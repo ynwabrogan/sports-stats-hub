@@ -44,7 +44,12 @@ type RawHittingSaberStat = {
   wRaa: number;
   baseRunning: number;
   fielding: number;
+  batting: number;
+  positional: number;
 };
+
+// Standard sabermetric approximation: ~10 runs equals one win.
+const RUNS_PER_WIN = 10;
 
 type RawPitchingStat = {
   wins: number;
@@ -120,6 +125,12 @@ async function getHitterRow(id: number, name: string): Promise<Row> {
     wrcPlus: saber ? Math.round(saber.stat.wRcPlus) : "—",
     bsr: saber ? Number(saber.stat.baseRunning.toFixed(1)) : "—",
     def: saber ? Number(saber.stat.fielding.toFixed(1)) : "—",
+    offWar: saber
+      ? Number(((saber.stat.batting + saber.stat.baseRunning) / RUNS_PER_WIN).toFixed(1))
+      : "—",
+    defWar: saber
+      ? Number(((saber.stat.fielding + saber.stat.positional) / RUNS_PER_WIN).toFixed(1))
+      : "—",
     war: saber ? Number(saber.stat.war.toFixed(1)) : "—",
   };
 }
@@ -161,6 +172,8 @@ const HITTER_COLUMNS: Column[] = [
   { key: "wrcPlus", header: "wRC+", statKey: "wrcPlus" },
   { key: "bsr", header: "BsR", statKey: "bsr" },
   { key: "def", header: "Def", statKey: "def" },
+  { key: "offWar", header: "OffWAR", statKey: "offWar" },
+  { key: "defWar", header: "DefWAR", statKey: "defWar" },
   { key: "war", header: "WAR", statKey: "war" },
 ];
 
@@ -205,12 +218,14 @@ export default async function BaseballPage() {
 
   return (
     <main className="min-h-screen p-6 sm:p-10">
-      <h1 className="text-2xl font-bold mb-1">Baseball Stats</h1>
-      <p className="text-xs text-gray-500">
+      <h1 className="text-2xl font-bold mb-1">
+        Coin<span className="text-accent">ball</span> · Baseball
+      </h1>
+      <p className="text-xs text-muted">
         Live {SEASON} regular season stats, via the MLB Stats API. Click a
         stat name for what it means, click the arrow next to it to sort.
       </p>
-      <p className="text-xs text-gray-400 mb-6">Stats last updated: {lastUpdated}</p>
+      <p className="text-xs text-muted/70 mb-6">Stats last updated: {lastUpdated}</p>
 
       <StatsTable
         title="Hitters"
@@ -219,6 +234,7 @@ export default async function BaseballPage() {
         defaultSortKey="war"
         displayLimit={HITTER_DISPLAY_LIMIT}
         alignColumnKey="woba"
+        showTrend
       />
 
       <div className="mt-10">

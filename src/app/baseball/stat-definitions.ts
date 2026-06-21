@@ -91,6 +91,34 @@ export const STAT_DEFINITIONS: Record<string, StatDefinition> = {
       "Runs saved or cost by a player's defense, relative to an average fielder at their position.",
     abstract: "How much a player's glove specifically helps or hurts their team.",
   },
+  offWar: {
+    label: "Offensive WAR",
+    simple:
+      "Batting runs plus baserunning runs, converted to wins using the standard ~10-runs-per-win approximation. A derived split of WAR isolating offense, not an official MLB/FanGraphs stat.",
+    abstract:
+      "How many wins a player's bat and legs add on their own, separate from their defense.",
+    scale: [
+      { emoji: "🔥", label: "Elite", range: "3.0 and up" },
+      { emoji: "✅", label: "Good", range: "1.5 – 2.9" },
+      { emoji: "😐", label: "Average", range: "0.5 – 1.4" },
+      { emoji: "👎", label: "Bad", range: "-0.5 – 0.4" },
+      { emoji: "💀", label: "Terrible", range: "below -0.5" },
+    ],
+  },
+  defWar: {
+    label: "Defensive WAR",
+    simple:
+      "Fielding runs plus the positional adjustment, converted to wins using the standard ~10-runs-per-win approximation. A derived split of WAR isolating defense, not an official MLB/FanGraphs stat.",
+    abstract:
+      "How many wins a player's glove and position add on their own, separate from their bat.",
+    scale: [
+      { emoji: "🔥", label: "Elite", range: "1.5 and up" },
+      { emoji: "✅", label: "Good", range: "0.5 – 1.4" },
+      { emoji: "😐", label: "Average", range: "-0.3 – 0.4" },
+      { emoji: "👎", label: "Bad", range: "-1.0 – -0.4" },
+      { emoji: "💀", label: "Terrible", range: "below -1.0" },
+    ],
+  },
   war: {
     label: "Wins Above Replacement",
     simple:
