@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { STAT_DEFINITIONS } from "./stat-definitions";
 
@@ -153,7 +154,11 @@ export function StatsTable({
                   className="relative origin-left border-b border-gray-100 transition-transform duration-100 hover:z-10 hover:scale-[1.015] hover:bg-gray-50 hover:shadow-md dark:hover:bg-gray-800"
                 >
                   <td className="py-0.5 pr-2 text-gray-400">{i + 1}</td>
-                  <td className="py-0.5 pr-2 font-medium">{row.name}</td>
+                  <td className="py-0.5 pr-2 font-medium">
+                    <Link href={`/baseball/players/${row.id}`} className="hover:text-blue-600">
+                      {row.name}
+                    </Link>
+                  </td>
                   <td className="py-0.5 pr-2">{row.team}</td>
                   {columns.map((col) => {
                     const value = row[col.key];
