@@ -7,8 +7,13 @@
   --foreground: #1d2329;
   --muted: #707b87;
   --accent: #5ac8fa;
-  --up: #4cd964;
-  --down: #f2706f;
+  --up: #3ddc84;
+  --down: #ff5c5c;
+  --stats-bg: #10151c;
+  --stats-surface: #182030;
+  --stats-border: #2a3346;
+  --stats-foreground: #e7ecf3;
+  --stats-muted: #8b97ab;
 }
 
 @theme inline {
@@ -20,6 +25,11 @@
   --color-accent: var(--accent);
   --color-up: var(--up);
   --color-down: var(--down);
+  --color-stats-bg: var(--stats-bg);
+  --color-stats-surface: var(--stats-surface);
+  --color-stats-border: var(--stats-border);
+  --color-stats-foreground: var(--stats-foreground);
+  --color-stats-muted: var(--stats-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

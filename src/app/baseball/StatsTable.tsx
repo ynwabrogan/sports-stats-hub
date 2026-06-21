@@ -119,16 +119,16 @@ export function StatsTable({
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-2">{title}</h2>
+      <h2 className="text-lg font-semibold mb-2 text-accent">{title}</h2>
 
       <div ref={sectionRef} className="relative">
         <div
-          className="absolute bottom-full right-0 z-20 mb-1 w-64 rounded-md border border-border bg-surface p-2 text-[11px] leading-snug text-muted shadow-sm"
+          className="absolute bottom-full right-0 z-20 mb-1 w-64 rounded-md border border-stats-border bg-stats-surface p-2 text-[11px] leading-snug text-stats-muted shadow-sm"
           style={alignColumnKey ? { left: leftOffset ?? undefined, width: "auto" } : undefined}
         >
           {selectedDef ? (
             <div className="text-justify">
-              <p className="font-medium text-foreground">{selectedDef.label}</p>
+              <p className="font-medium text-stats-foreground">{selectedDef.label}</p>
               <p>{selectedDef.simple}</p>
               <p>{selectedDef.abstract}</p>
               {selectedDef.scale && (
@@ -138,14 +138,14 @@ export function StatsTable({
               )}
             </div>
           ) : (
-            <p className="text-muted">Click a stat name below for what it means.</p>
+            <p className="text-stats-muted">Click a stat name below for what it means.</p>
           )}
         </div>
 
-        <div className="overflow-x-auto rounded-md border border-border">
+        <div className="overflow-x-auto rounded-md border border-stats-border bg-stats-bg">
           <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="border-b border-border bg-surface text-muted">
+              <tr className="border-b border-stats-border bg-stats-surface text-stats-muted">
                 <th className="py-1.5 px-2">#</th>
                 <th className="py-1.5 px-2">Player</th>
                 <th className="py-1.5 px-2">Team</th>
@@ -167,7 +167,7 @@ export function StatsTable({
                       <span
                         onClick={() => handleSort(col.key)}
                         className={`cursor-pointer hover:text-accent ${
-                          isSorted ? "text-foreground" : "text-muted/50"
+                          isSorted ? "text-accent" : "text-stats-muted/50"
                         }`}
                       >
                         {arrow}
@@ -181,9 +181,9 @@ export function StatsTable({
               {sorted.map((row, i) => (
                 <Fragment key={row.id}>
                   <tr
-                    className="relative origin-left border-b border-border transition-transform duration-100 hover:z-10 hover:scale-[1.015] hover:bg-surface hover:shadow-md"
+                    className="relative origin-left border-b border-stats-border text-stats-foreground transition-transform duration-100 hover:z-10 hover:scale-[1.015] hover:bg-stats-surface hover:shadow-md"
                   >
-                    <td className="py-0.5 px-2 font-mono text-muted">{i + 1}</td>
+                    <td className="py-0.5 px-2 font-mono text-stats-muted">{i + 1}</td>
                     <td className="py-0.5 px-2 font-medium">
                       <button
                         type="button"
@@ -193,13 +193,13 @@ export function StatsTable({
                         {row.name}
                       </button>
                     </td>
-                    <td className="py-0.5 px-2 text-muted">{row.team}</td>
+                    <td className="py-0.5 px-2 text-stats-muted">{row.team}</td>
                     {columns.map((col) => {
                       const value = row[col.key];
                       return (
                         <td key={col.key} className="py-0.5 px-2">
                           {value == null ? (
-                            <span className="text-muted">—</span>
+                            <span className="text-stats-muted">—</span>
                           ) : (
                             <DeltaValue columnKey={col.key} value={value} />
                           )}
@@ -208,7 +208,7 @@ export function StatsTable({
                     })}
                   </tr>
                   {expandedPlayerId === row.id && (
-                    <tr className="border-b border-border bg-surface">
+                    <tr className="border-b border-stats-border bg-stats-surface">
                       <td colSpan={columns.length + 3} className="p-3">
                         <div className="flex items-center gap-4">
                           <Image
@@ -216,10 +216,10 @@ export function StatsTable({
                             alt={row.name}
                             width={64}
                             height={64}
-                            className="rounded-md bg-background"
+                            className="rounded-md bg-stats-bg"
                             unoptimized
                           />
-                          <span className="font-medium text-foreground">{row.name}</span>
+                          <span className="font-medium text-stats-foreground">{row.name}</span>
                           {showTrend && <TrendChart playerId={row.id} />}
                         </div>
                       </td>
