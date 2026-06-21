@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f2f5f8;
+  /* 60% — dominant background */
+  --background: #f1f4f7;
+  /* 30% — secondary surface (cards, table, panels) */
   --surface: #ffffff;
-  --border: #dde4ea;
-  --foreground: #1d2329;
-  --muted: #707b87;
-  --accent: #5ac8fa;
-  --up: #3ddc84;
-  --down: #ff5c5c;
-  --stats-bg: #10151c;
-  --stats-surface: #182030;
-  --stats-border: #2a3346;
-  --stats-foreground: #e7ecf3;
-  --stats-muted: #8b97ab;
+  --border: #dde3ea;
+  /* Text */
+  --foreground: #1a2330;
+  --muted: #5b6573;
+  /* 10% — accent, used only for interactive/highlighted elements */
+  --accent: #0f62d6;
+  /* Semantic, WCAG AA-passing on white (~4.5:1+) */
+  --up: #1e8e45;
+  --down: #c62828;
 }
 
 @theme inline {
@@ -25,11 +25,6 @@
   --color-accent: var(--accent);
   --color-up: var(--up);
   --color-down: var(--down);
-  --color-stats-bg: var(--stats-bg);
-  --color-stats-surface: var(--stats-surface);
-  --color-stats-border: var(--stats-border);
-  --color-stats-foreground: var(--stats-foreground);
-  --color-stats-muted: var(--stats-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
